@@ -230,3 +230,9 @@ test('first RAF cannot create negative curve time and facade details remain outs
   assert.match(js3d, /b.w \/ 2 \+ 0.08/);
   assert.ok(js3d.indexOf("renderer.render(scene, camera);") < js3d.lastIndexOf("host.classList.add('has-3d')"));
 });
+
+test('fallback keeps SVG base placement outside animation and route reserves object half-width', () => {
+  assert.match(html, /<g transform="translate\(606,120\)"><g class="clock">/);
+  assert.doesNotMatch(html, /class="clock" transform=/);
+  assert.match(css, /margin: clamp\(8px, 2vh, 20px\) clamp\(24px, 4vw, 56px\) 0/);
+});
