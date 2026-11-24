@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오늘의 도움 · 생활 심부름 접수 시연 (정적 제안 시안)</title>
+<meta name="description" content="가상 서비스 ‘오늘의 도움’의 접수 흐름 제안 시안. 실제 운영 서비스가 아닙니다.">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#service">본문으로 건너뛰기</a>
+<div class="demo-band" role="note"><span>정적 제안 시안 · 가상 서비스 · 실제 접수 없음</span></div>
+
+<header class="site-header">
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">오늘의 도움</span><span class="brand-tag">가상 서비스</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><span class="menu-bars" aria-hidden="true"></span><span>메뉴</span></button>
+  <nav id="site-nav" class="site-nav" aria-label="페이지 안 이동">
+    <ul>
+      <li><a href="#service">서비스 안내</a></li>
+      <li><a href="#demo">접수 시연</a></li>
+      <li><a href="#flow">진행 흐름</a></li>
+      <li><a href="#operator">운영자 화면</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="kicker">A little help. A lighter day.</p>
+    <h1 id="hero-title"><span class="nw">작은 부탁부터,</span><br><span class="nw">차근차근.</span></h1>
+    <p class="lede">요청 조건을 살펴보고, 운영자가 확인할 내용을 정리하는 접수 시연입니다.</p>
+    <a class="btn btn-dark" href="#demo">예시 요청 시작하기</a>
+    <p class="hero-note">물건 전달 1종 · 가상 구역 · 가상 산식</p>
+  </div>
+
+  <div class="hero-art">
+    <svg class="town" viewBox="40 20 720 460" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="town-title town-desc" focusable="false">
+      <title id="town-title">가상 마을 위의 배달 경로 일러스트</title>
+      <desc id="town-desc">아이소메트릭 마을 가운데 소포가 놓여 있고, 주황색 점선 경로가 출발 지점에서 도착 지점까지 이어집니다.</desc>
+      <defs>
+        <linearGradient id="g-ground" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dfe6c4"/><stop offset="1" stop-color="#c3d0a8"/></linearGradient>
+        <linearGradient id="g-top-g" x1="0" x2="1"><stop offset="0" stop-color="#4f8a6c"/><stop offset="1" stop-color="#3b7357"/></linearGradient>
+        <linearGradient id="g-left-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6b50"/><stop offset="1" stop-color="#255c45"/></linearGradient>
+        <linearGradient id="g-right-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f4d3a"/><stop offset="1" stop-color="#163a2b"/></linearGradient>
+        <linearGradient id="g-top-c" x1="0" x2="1"><stop offset="0" stop-color="#fffdf2"/><stop offset="1" stop-color="#efe9d2"/></linearGradient>
+        <linearGradient id="g-left-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8e0c4"/><stop offset="1" stop-color="#d6cdaf"/></linearGradient>
+        <linearGradient id="g-right-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9bf9f"/><stop offset="1" stop-color="#b3a885"/></linearGradient>
+        <linearGradient id="g-top-d" x1="0" x2="1"><stop offset="0" stop-color="#4a564f"/><stop offset="1" stop-color="#36423c"/></linearGradient>
+        <linearGradient id="g-left-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3530"/><stop offset="1" stop-color="#1f2823"/></linearGradient>
+        <linearGradient id="g-right-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a211d"/><stop offset="1" stop-color="#111613"/></linearGradient>
+        <linearGradient id="g-top-t" x1="0" x2="1"><stop offset="0" stop-color="#f0a46a"/><stop offset="1" stop-color="#e28a4a"/></linearGradient>
+        <linearGradient id="g-left-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9773a"/><stop offset="1" stop-color="#c4662c"/></linearGradient>
+        <linearGradient id="g-right-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b35a26"/><stop offset="1" stop-color="#8f4518"/></linearGradient>
+        <linearGradient id="g-box-top" x1="0" x2="1"><stop offset="0" stop-color="#f6dfb6"/><stop offset="1" stop-color="#e9c58c"/></linearGradient>
+        <linearGradient id="g-box-left" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9ac6b"/><stop offset="1" stop-color="#c1924f"/></linearGradient>
+        <linearGradient id="g-box-right" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b17f42"/><stop offset="1" stop-color="#8e6230"/></linearGradient>
+        <radialGradient id="g-canopy" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#7fb48a"/><stop offset="1" stop-color="#2f6b50"/></radialGradient>
+        <radialGradient id="g-shadow"><stop offset="0" stop-color="#1f2823" stop-opacity=".35"/><stop offset="1" stop-color="#1f2823" stop-opacity="0"/></radialGradient>
+        <pattern id="win-l" width="16" height="22" patternUnits="userSpaceOnUse" patternTransform="skewY(26.565)"><rect x="4" y="5" width="7" height="10" rx="1" fill="#f3f1a6" opacity=".85"/></pattern>
+        <pattern id="win-r" width="16" height="22" patternUnits="userSpaceOnUse" patternTransform="skewY(-26.565)"><rect x="4" y="5" width="7" height="10" rx="1" fill="#f3f1a6" opacity=".6"/></pattern>
+        <symbol id="tree" viewBox="-20 -52 40 60"><ellipse cx="0" cy="5" rx="16" ry="6" fill="url(#g-shadow)"/><rect x="-2" y="-18" width="4" height="22" rx="1.5" fill="#6b4a2b"/><circle cx="0" cy="-22" r="15" fill="url(#g-canopy)"/><circle cx="-7" cy="-32" r="11" fill="url(#g-canopy)"/><circle cx="7" cy="-36" r="12" fill="url(#g-canopy)"/><circle cx="2" cy="-40" r="7" fill="#9cc79a" opacity=".7"/></symbol>
+        <symbol id="pin" viewBox="-14 -36 28 40"><path d="M0 0C-9-12-13-18-13-24a13 13 0 0 1 26 0c0 6-4 12-13 24z" fill="#e8792b" stroke="#fff" stroke-width="2.2"/><circle cx="0" cy="-24" r="5" fill="#fff"/></symbol>
+      </defs>
+
+      <!-- 지면: 바닥 그림자(앰비언트) → 지반 두께 → 윗면 → 보도 → 도로 -->
+      <ellipse cx="404" cy="312" rx="330" ry="128" fill="url(#g-shadow)"/>
+      <polygon points="400,120 700,270 400,420 100,270" transform="translate(0,18)" fill="#9fb088"/>
+      <polygon points="400,120 700,270 400,420 100,270" transform="translate(0,18)" fill="#1f2823" opacity=".12"/>
+      <polygon points="400,120 700,270 400,420 100,270" fill="url(#g-ground)"/>
+      <!-- 보도(연석) · 도로 · 횡단보도 -->
+      <g fill="#dde2c8"><polygon points="278,181 578,331 570,335 270,185"/><polygon points="222,209 522,359 530,355 230,205"/><polygon points="222,331 522,181 530,185 230,335"/><polygon points="578,209 278,359 270,355 570,205"/></g>
+      <g fill="#8b958c">
+        <polygon points="270,185 570,335 530,355 230,205"/>
+        <polygon points="530,185 570,205 270,355 230,335"/>
+      </g>
+      <g stroke="#f3f1a6" stroke-width="2.2" opacity=".55" fill="none"><line x1="368" y1="226" x2="392" y2="238"/><line x1="362" y1="232" x2="386" y2="244"/><line x1="356" y1="238" x2="380" y2="250"/></g>
+      <g stroke="#f3f1a6" stroke-width="1.6" stroke-dasharray="7 7" opacity=".8" fill="none">
+        <line x1="250" y1="195" x2="550" y2="345"/><line x1="550" y1="195" x2="250" y2="345"/>
+      </g>
+
+      <!-- 건물: 북서 녹색 타워 -->
+      <g><polygon points="340,170 410,205 410,115 340,80" fill="url(#g-left-g)"/><polygon points="340,170 410,205 410,115 340,80" fill="url(#win-l)"/>
+         <polygon points="410,205 470,175 470,85 410,115" fill="url(#g-right-g)"/><polygon points="410,205 470,175 470,85 410,115" fill="url(#win-r)"/>
+         <polygon points="400,50 470,85 410,115 340,80" fill="url(#g-top-g)"/><polygon points="412,62 450,81 416,98 378,79" fill="#5f9a7c" opacity=".7"/></g>
+      <!-- 북서 저층 크림 -->
+      <g><polygon points="300,190 390,235 390,195 300,150" fill="url(#g-left-c)"/><polygon points="300,190 390,235 390,195 300,150" fill="url(#win-l)" opacity=".5"/>
+         <polygon points="390,235 420,220 420,180 390,195" fill="url(#g-right-c)"/>
+         <polygon points="330,135 420,180 390,195 300,150" fill="url(#g-top-c)"/><polygon points="320,200 334,207 334,185 320,178" fill="#e8792b"/></g>
+      <!-- 북동 오프화이트 -->
+      <g><polygon points="520,250 610,295 610,235 520,190" fill="url(#g-left-c)"/><polygon points="520,250 610,295 610,235 520,190" fill="url(#win-l)" opacity=".6"/>
+         <polygon points="610,295 660,270 660,210 610,235" fill="url(#g-right-c)"/><polygon points="610,295 660,270 660,210 610,235" fill="url(#win-r)" opacity=".6"/>
+         <polygon points="570,165 660,210 610,235 520,190" fill="url(#g-top-c)"/><polygon points="586,178 630,200 606,212 562,190" fill="#ddd5b7"/></g>
+      <!-- 남서 테라코타 -->
+      <g><polygon points="160,260 240,300 240,245 160,205" fill="url(#g-left-t)"/><polygon points="160,260 240,300 240,245 160,205" fill="url(#win-l)" opacity=".7"/>
+         <polygon points="240,300 320,260 320,205 240,245" fill="url(#g-right-t)"/><polygon points="240,300 320,260 320,205 240,245" fill="url(#win-r)" opacity=".7"/>
+         <polygon points="240,165 320,205 240,245 160,205" fill="url(#g-top-t)"/><ellipse cx="240" cy="205" rx="22" ry="11" fill="#fff" opacity=".35"/></g>
+      <!-- 북동 근흑 타워 -->
+      <g><polygon points="475,282 545,317 545,207 475,172" fill="url(#g-left-d)"/><polygon points="475,282 545,317 545,207 475,172" fill="url(#win-l)"/>
+         <polygon points="545,317 585,297 585,187 545,207" fill="url(#g-right-d)"/><polygon points="545,317 585,297 585,187 545,207" fill="url(#win-r)"/>
+         <polygon points="515,152 585,187 545,207 475,172" fill="url(#g-top-d)"/><circle cx="531" cy="178" r="5" fill="#e8792b"/></g>
+      <!-- 남동 녹색 -->
+      <g><polygon points="310,355 400,400 400,330 310,285" fill="url(#g-left-g)"/><polygon points="310,355 400,400 400,330 310,285" fill="url(#win-l)"/>
+         <polygon points="400,400 490,355 490,285 400,330" fill="url(#g-right-g)"/><polygon points="400,400 490,355 490,285 400,330" fill="url(#win-r)"/>
+         <polygon points="400,240 490,285 400,330 310,285" fill="url(#g-top-g)"/><polygon points="400,258 455,285 400,312 345,285" fill="#f3f1a6" opacity=".45"/></g>
+      <!-- 옥상 디테일: 녹색 타워 환기 박스 · 테라코타 굴뚝 · 근흑 타워 물탱크 -->
+      <g><polygon points="436,70 452,78 436,86 420,78" fill="#8fc0a4"/><polygon points="420,78 436,86 436,96 420,88" fill="#3b7357"/><polygon points="436,86 452,78 452,88 436,96" fill="#2f6b50"/></g>
+      <g><polygon points="196,183 208,189 208,171 196,165" fill="#c4662c"/><polygon points="208,189 216,185 216,167 208,171" fill="#8f4518"/><polygon points="202,162 216,167 208,171 196,165" fill="#f0a46a"/></g>
+      <g><ellipse cx="562" cy="176" rx="9" ry="4.5" fill="#6f7a73"/><rect x="553" y="166" width="18" height="10" fill="#4a564f"/><ellipse cx="562" cy="166" rx="9" ry="4.5" fill="#9aa79f"/></g>
+
+      <!-- 나무 -->
+      <use href="#tree" x="465" y="130" width="40" height="60"/><use href="#tree" x="130" y="225" width="40" height="60"/>
+      <use href="#tree" x="380" y="352" width="40" height="60"/><use href="#tree" x="495" y="300" width="40" height="60"/>
+      <use href="#tree" x="270" y="300" width="36" height="54"/><use href="#tree" x="640" y="248" width="36" height="54"/>
+
+      <!-- 경로 -->
+      <g class="route" fill="none" stroke="#e8792b" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline class="route-line" points="540,200 400,270 530,335" stroke-dasharray="9 9"/>
+      </g>
+      <g class="route-nodes"><circle cx="540" cy="200" r="7" fill="#fff" stroke="#e8792b" stroke-width="3"/><circle cx="530" cy="335" r="7" fill="#fff" stroke="#e8792b" stroke-width="3"/></g>
+      <use href="#pin" x="526" y="164" width="28" height="40"/><use href="#pin" x="516" y="299" width="28" height="40"/>
+
+      <!-- 배달원 (스쿠터) -->
+      <g class="courier" transform="translate(470,236)">
+        <ellipse cx="0" cy="12" rx="20" ry="6" fill="url(#g-shadow)"/>
+        <circle cx="-12" cy="6" r="6" fill="#1f2823"/><circle cx="12" cy="6" r="6" fill="#1f2823"/><circle cx="-12" cy="6" r="2.5" fill="#f3f1a6"/><circle cx="12" cy="6" r="2.5" fill="#f3f1a6"/>
+        <path d="M-10 4h22l-4-10h-10z" fill="#255c45"/><rect x="2" y="-20" width="12" height="11" rx="2" fill="#e8792b"/>
+        <rect x="-8" y="-18" width="9" height="14" rx="3" fill="#1f2823"/><circle cx="-3.5" cy="-23" r="5" fill="#f3f1a6" stroke="#1f2823" stroke-width="1.5"/>
+      </g>
+
+      <!-- 중앙 소포 -->
+      <g class="parcel">
+        <ellipse cx="400" cy="272" rx="46" ry="20" fill="url(#g-shadow)"/>
+        <polygon points="360,240 400,260 400,220 360,200" fill="url(#g-box-left)"/><polygon points="400,260 440,240 440,200 400,220" fill="url(#g-box-right)"/>
+        <polygon points="400,180 440,200 400,220 360,200" fill="url(#g-box-top)"/>
+        <polygon points="396,178 404,182 404,222 396,218" fill="#f3f1a6"/><polygon points="376,208 384,212 384,252 376,248" fill="#f3f1a6" opacity=".9"/><polygon points="416,212 424,208 424,248 416,252" fill="#f3f1a6" opacity=".75"/>
+        <polygon points="380,190 390,195 384,198 374,193" fill="#255c45"/>
+      </g>
+
+      <!-- 시계 컴포넌트 -->
+      <g class="clock" transform="translate(606,120)">
+        <circle r="22" fill="#fff" stroke="#1f2823" stroke-width="2"/><circle r="2" fill="#1f2823"/>
+        <line x1="0" y1="0" x2="0" y2="-12" stroke="#1f2823" stroke-width="2.4" stroke-linecap="round"/><line x1="0" y1="0" x2="9" y2="5" stroke="#e8792b" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+    </svg>
+
+    <div class="float-card" aria-hidden="true">
+      <span class="fc-label">물건 전달 · 예시</span>
+      <span class="fc-value">10,000~15,000원</span>
+      <span class="fc-status"><i></i>운영자 확인 전</span>
+    </div>
+  </div>
+</section>
+
+<!-- 장면 전환: 히어로→시연 사이의 짧은 경로 띠. 캡션 1줄(읽히는 텍스트) + 장식 경로(aria-hidden) -->
+<div class="scene">
+  <div class="scene-surface">
+    <p class="scene-caption">조건을 고르고, 예상 범위를 확인하세요.</p>
+    <svg class="scene-route" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+      <path class="scene-path" d="M140 100H960" pathLength="1"/>
+      <circle class="scene-node" cx="140" cy="100" r="16"/>
+      <g class="scene-parcel"><rect x="980" y="50" width="100" height="100" rx="24"/><path d="M1030 50v100M980 100h100"/></g>
+    </svg>
+  </div>
+</div>
+
+<section class="section demo" id="demo" aria-labelledby="demo-title">
+  <div class="demo-head"><p class="eyebrow light">접수 시연</p><h2 id="demo-title">예시 요청을 직접 눌러 보세요.</h2></div>
+  <div class="app-shell">
+    <form id="wizard" class="wizard" novalidate aria-labelledby="demo-title">
+      <ol class="stepper" aria-label="진행 단계">
+        <li data-step="1" aria-current="step"><span>1</span>서비스 확인</li>
+        <li data-step="2"><span>2</span>조건 선택</li>
+        <li data-step="3"><span>3</span>예상 범위</li>
+        <li data-step="4"><span>4</span>검토 대기</li>
+      </ol>
+      <p class="sr-only" id="wizard-live" aria-live="polite" aria-atomic="true"></p>
+
+      <section class="step-panel is-active" data-panel="1" aria-labelledby="p1-title">
+        <h3 id="p1-title" tabindex="-1">물건 전달 요청으로 진행합니다</h3>
+        <p>이 시연에서 고를 수 있는 서비스는 물건 전달 1종입니다. 주소·연락처·사진은 묻지 않습니다.</p>
+        <div class="actions"><button class="btn btn-light" type="button" data-go="2">조건 선택으로</button></div>
+      </section>
+
+      <section class="step-panel" data-panel="2" aria-labelledby="p2-title">
+        <h3 id="p2-title" tabindex="-1">조건을 선택하세요</h3>
+        <div class="fields">
+          <label class="field"><span>출발 구역</span><select name="from" data-cond="from"><option value="A">구역 A</option><option value="B">구역 B</option></select></label>
+          <label class="field"><span>도착 구역</span><select name="to" data-cond="to"><option value="A">구역 A</option><option value="B">구역 B</option></select></label>
+          <fieldset class="field"><legend>짐 크기</legend>
+            <label class="radio"><input type="radio" name="size" value="small" data-cond="size" checked>소형</label>
+            <label class="radio"><input type="radio" name="size" value="medium" data-cond="size">중형</label></fieldset>
+          <fieldset class="field"><legend>계단</legend>
+            <label class="radio"><input type="radio" name="stairs" value="false" data-cond="stairs" checked>없음</label>
+            <label class="radio"><input type="radio" name="stairs" value="true" data-cond="stairs">있음</label></fieldset>
+        </div>
+        <div class="actions"><button class="btn btn-ghost" type="button" data-go="1">이전</button><button class="btn btn-light" type="button" data-go="3">예상 범위 보기</button></div>
+      </section>
+
+      <section class="step-panel" data-panel="3" aria-labelledby="p3-title">
+        <h3 id="p3-title" tabindex="-1">예상 범위</h3>
+        <p class="range" data-range>10,000원 ~ 15,000원</p>
+        <p class="caption">시연용 규칙 계산 · 실제 AI 아님 · 확정 견적 아님</p>
+        <table class="breakdown"><caption class="sr-only">금액 내역</caption><tbody data-breakdown></tbody></table>
+        <div class="actions"><button class="btn btn-ghost" type="button" data-go="2">조건 수정</button><button class="btn btn-light" type="button" data-pending>검토 대기 화면 보기</button></div>
+      </section>
+
+      <section class="step-panel" data-panel="4" aria-labelledby="p4-title">
+        <p class="pending-badge">운영자 확인 대기(시연)</p>
+        <h3 id="p4-title" tabindex="-1">실제 접수되지 않았습니다</h3>
+        <p>아래 조건과 범위가 운영자 화면에 표시되는 모습을 보여주는 단계입니다. 전송·저장·배정은 일어나지 않습니다.</p>
+        <dl class="final" data-final></dl>
+        <div class="actions"><button class="btn btn-ghost" type="button" data-go="2">조건 수정</button><button class="btn btn-light" type="button" data-reset>처음부터</button></div>
+      </section>
+    </form>
+
+    <aside class="summary" aria-labelledby="sum-title">
+      <h3 id="sum-title">선택 요약</h3>
+      <dl data-summary></dl>
+      <p class="sum-status">상태 <strong data-status>예시 작성</strong></p>
+      <p class="sum-range">예상 <strong data-range>10,000원 ~ 15,000원</strong></p>
+      <p class="caption">시연용 규칙 계산 · 실제 AI 아님 · 확정 견적 아님</p>
+    </aside>
+  </div>
+</section>
+
+<section class="section service" id="service" aria-labelledby="service-title">
+  <p class="eyebrow">서비스 안내</p>
+  <h2 id="service-title">지금은 한 가지만 다룹니다.<br><span class="accent">물건 전달</span> 1종.</h2>
+  <div class="service-grid">
+    <p class="service-lede">가까운 두 구역 사이에서 작은 짐을 대신 옮기는 요청을 예시로 받습니다. 넓은 범위의 심부름을 약속하지 않고, 접수 화면이 어떤 질문을 어떤 순서로 묻는지에 집중했습니다.</p>
+    <dl class="facts">
+      <div><dt>다루는 요청</dt><dd>소형·중형 짐 전달</dd></div>
+      <div><dt>구역</dt><dd>가상 구역 A·B</dd></div>
+      <div><dt>입력 방식</dt><dd>선택지만 사용, 자유 입력 없음</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section flow" id="flow" aria-labelledby="flow-title">
+  <p class="eyebrow">진행 흐름</p>
+  <h2 id="flow-title">세 번의 화면, 세 번의 확인.</h2>
+  <ol class="steps-editorial">
+    <li><span class="num">01</span><h3>예시 작성</h3><p>출발·도착 구역, 짐 크기, 계단 유무를 선택합니다.</p></li>
+    <li><span class="num">02</span><h3>예상 범위 확인</h3><p>고정 규칙으로 계산한 금액 범위와 내역을 봅니다.</p></li>
+    <li><span class="num">03</span><h3>운영자 검토 대기</h3><p>같은 조건이 운영자 화면에 그대로 전달되는 모습까지 보여줍니다.</p></li>
+  </ol>
+</section>
+
+
+<section class="section operator" id="operator" aria-labelledby="op-title">
+  <p class="eyebrow">운영자 화면</p>
+  <h2 id="op-title">운영자가 보게 될 같은 조건.</h2>
+  <div class="op-panel">
+    <p class="op-tag">운영자 개념 화면 · 확정·배정 기능 미구현</p>
+    <div class="op-row"><span>요청 종류</span><strong>물건 전달</strong></div>
+    <div class="op-row"><span>조건</span><strong data-op-conditions>A → A · 소형 · 계단 없음</strong></div>
+    <div class="op-row"><span>예상 범위</span><strong data-range>10,000원 ~ 15,000원</strong></div>
+    <div class="op-row"><span>상태</span><strong data-status>예시 작성</strong></div>
+    <p class="op-note">이 패널은 접수 시연의 선택값을 읽기 전용으로 비추기만 합니다. 금액 확정, 파트너 배정·수락, 결제, 위치, 알림 기능은 포함하지 않습니다.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <p><strong>오늘의 도움</strong>은 제안을 위해 만든 가상 서비스명입니다. 이 페이지는 정적 제안 시안이며 실제 서비스가 아닙니다.</p>
+  <p>표시된 금액은 시연용 고정 규칙이며 사업 요금이 아닙니다. 입력값은 브라우저 메모리에만 머물고 새로고침 시 초기화됩니다.</p>
+  <p>서체: Pretendard (SIL Open Font License) · 일러스트: 본 시안용 자체 제작</p>
+</footer>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

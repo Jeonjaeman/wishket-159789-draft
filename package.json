@@ -1,0 +1,11 @@
+{
+  "name": "errand-proposal-159789",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "정적 제안 시안 — 가상 서비스 '오늘의 도움' 접수 시연 (실제 서비스 아님)",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "license": "UNLICENSED"
+}
