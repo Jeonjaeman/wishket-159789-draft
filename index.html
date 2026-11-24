@@ -13,7 +13,7 @@
 <div class="demo-band" role="note"><span>정적 제안 시안 · 가상 서비스 · 실제 접수 없음</span></div>
 
 <header class="site-header">
-  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">오늘의 도움</span><span class="brand-tag">가상 서비스</span></a>
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">오늘의 도움</span></a>
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><span class="menu-bars" aria-hidden="true"></span><span>메뉴</span></button>
   <nav id="site-nav" class="site-nav" aria-label="페이지 안 이동">
     <ul>
@@ -32,11 +32,13 @@
     <h1 id="hero-title"><span class="nw">작은 부탁부터,</span><br><span class="nw">차근차근.</span></h1>
     <p class="lede">요청 조건을 살펴보고, 운영자가 확인할 내용을 정리하는 접수 시연입니다.</p>
     <a class="btn btn-dark" href="#demo">예시 요청 시작하기</a>
-    <p class="hero-note">물건 전달 1종 · 가상 구역 · 가상 산식</p>
+    <p class="hero-note">물건 전달 1종 · 구역 A·B 사이 · 선택지로만 접수</p>
   </div>
 
+  <!-- 히어로 아트: 기본은 자체 제작 SVG(title·desc 로 읽힘). WebGL이 되면 scene3d.mjs가 같은 자리에 캔버스(aria-hidden)를 얹고 SVG는 보조 기술에만 남긴다 -->
   <div class="hero-art">
-    <svg class="town" viewBox="40 20 720 460" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="town-title town-desc" focusable="false">
+    <div class="hero-art-stage">
+    <svg class="town" viewBox="60 36 690 420" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="town-title town-desc" focusable="false">
       <title id="town-title">가상 마을 위의 배달 경로 일러스트</title>
       <desc id="town-desc">아이소메트릭 마을 가운데 소포가 놓여 있고, 주황색 점선 경로가 출발 지점에서 도착 지점까지 이어집니다.</desc>
       <defs>
@@ -144,6 +146,7 @@
         <line x1="0" y1="0" x2="0" y2="-12" stroke="#1f2823" stroke-width="2.4" stroke-linecap="round"/><line x1="0" y1="0" x2="9" y2="5" stroke="#e8792b" stroke-width="2.4" stroke-linecap="round"/>
       </g>
     </svg>
+    </div>
 
     <div class="float-card" aria-hidden="true">
       <span class="fc-label">물건 전달 · 예시</span>
@@ -153,15 +156,41 @@
   </div>
 </section>
 
-<!-- 장면 전환: 히어로→시연 사이의 짧은 경로 띠. 캡션 1줄(읽히는 텍스트) + 장식 경로(aria-hidden) -->
-<div class="scene">
-  <div class="scene-surface">
-    <p class="scene-caption">조건을 고르고, 예상 범위를 확인하세요.</p>
-    <svg class="scene-route" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-      <path class="scene-path" d="M140 100H960" pathLength="1"/>
-      <circle class="scene-node" cx="140" cy="100" r="16"/>
-      <g class="scene-parcel"><rect x="980" y="50" width="100" height="100" rx="24"/><path d="M1030 50v100M980 100h100"/></g>
-    </svg>
+<!-- 장면 전환: 히어로→시연 사이의 풀블리드 무대. 스크롤 트랙(.scene) 안에 고정 무대(.scene-sticky)가 머무는 동안
+     지면(.scene-surface, 장식)이 둥근 카드에서 뷰포트 전체로 열리고, 소포가 경로를 따라 이동한다.
+     읽히는 글(캡션·문장·상태 표식)은 클리핑 레이어 밖(.scene-stage)에 두어 어느 프레임에서도 잘리지 않는다 -->
+<div class="scene" id="scene">
+  <div class="scene-sticky">
+    <div class="scene-surface" aria-hidden="true"></div>
+    <div class="scene-stage">
+      <p class="scene-caption">조건을 고르고, 예상 범위를 확인하세요.</p>
+      <p class="scene-title"><span class="nw">부탁의 시작에서,</span><br><span class="nw">도움이 닿기까지.</span></p>
+      <div class="scene-track" aria-hidden="true">
+        <svg class="scene-route" viewBox="0 0 1200 120" preserveAspectRatio="none" focusable="false">
+          <path class="scene-path-base" d="M0 100Q600-20 1200 100" pathLength="1"/>
+          <path class="scene-path" d="M0 100Q600-20 1200 100" pathLength="1"/>
+        </svg>
+        <span class="scene-node scene-node-start"></span>
+        <span class="scene-node scene-node-end"></span>
+        <div class="scene-parcel">
+          <svg viewBox="0 0 120 130" focusable="false">
+            <ellipse class="sp-shadow" cx="60" cy="118" rx="44" ry="10"/>
+            <polygon points="18,52 60,74 60,118 18,96" fill="#d9ac6b"/>
+            <polygon points="60,74 102,52 102,96 60,118" fill="#b17f42"/>
+            <polygon points="60,30 102,52 60,74 18,52" fill="#f6dfb6"/>
+            <polygon points="56,28 64,32 64,76 56,72" fill="#f3f1a6"/>
+            <polygon points="35,61 43,65 43,109 35,105" fill="#f3f1a6" opacity=".9"/>
+            <polygon points="77,65 85,61 85,105 77,109" fill="#f3f1a6" opacity=".75"/>
+            <polygon points="40,44 52,50 46,53 34,47" fill="#255c45"/>
+          </svg>
+        </div>
+      </div>
+      <ol class="scene-status" aria-label="시연 진행 상태">
+        <li class="scene-mark" data-mark="1"><span>01</span>예시 작성</li>
+        <li class="scene-mark" data-mark="2"><span>02</span>예상 범위</li>
+        <li class="scene-mark" data-mark="3"><span>03</span>검토 대기</li>
+      </ol>
+    </div>
   </div>
 </div>
 
@@ -209,7 +238,7 @@
       <section class="step-panel" data-panel="4" aria-labelledby="p4-title">
         <p class="pending-badge">운영자 확인 대기(시연)</p>
         <h3 id="p4-title" tabindex="-1">실제 접수되지 않았습니다</h3>
-        <p>아래 조건과 범위가 운영자 화면에 표시되는 모습을 보여주는 단계입니다. 전송·저장·배정은 일어나지 않습니다.</p>
+        <p>같은 조건과 예상 범위가 운영자 화면에 그대로 표시되는 모습을 보여주는 단계입니다.</p>
         <dl class="final" data-final></dl>
         <div class="actions"><button class="btn btn-ghost" type="button" data-go="2">조건 수정</button><button class="btn btn-light" type="button" data-reset>처음부터</button></div>
       </section>
@@ -220,7 +249,6 @@
       <dl data-summary></dl>
       <p class="sum-status">상태 <strong data-status>예시 작성</strong></p>
       <p class="sum-range">예상 <strong data-range>10,000원 ~ 15,000원</strong></p>
-      <p class="caption">시연용 규칙 계산 · 실제 AI 아님 · 확정 견적 아님</p>
     </aside>
   </div>
 </section>
@@ -229,10 +257,10 @@
   <p class="eyebrow">서비스 안내</p>
   <h2 id="service-title">지금은 한 가지만 다룹니다.<br><span class="accent">물건 전달</span> 1종.</h2>
   <div class="service-grid">
-    <p class="service-lede">가까운 두 구역 사이에서 작은 짐을 대신 옮기는 요청을 예시로 받습니다. 넓은 범위의 심부름을 약속하지 않고, 접수 화면이 어떤 질문을 어떤 순서로 묻는지에 집중했습니다.</p>
+    <p class="service-lede">가까운 두 구역 사이에서 작은 짐을 대신 옮기는 요청을 예시로 받습니다. 접수 화면이 어떤 질문을 어떤 순서로 묻는지에 집중했습니다.</p>
     <dl class="facts">
       <div><dt>다루는 요청</dt><dd>소형·중형 짐 전달</dd></div>
-      <div><dt>구역</dt><dd>가상 구역 A·B</dd></div>
+      <div><dt>구역</dt><dd>구역 A·B</dd></div>
       <div><dt>입력 방식</dt><dd>선택지만 사용, 자유 입력 없음</dd></div>
     </dl>
   </div>
@@ -253,12 +281,12 @@
   <p class="eyebrow">운영자 화면</p>
   <h2 id="op-title">운영자가 보게 될 같은 조건.</h2>
   <div class="op-panel">
-    <p class="op-tag">운영자 개념 화면 · 확정·배정 기능 미구현</p>
+    <p class="op-tag">개념 화면 · 확정·배정 미구현</p>
     <div class="op-row"><span>요청 종류</span><strong>물건 전달</strong></div>
     <div class="op-row"><span>조건</span><strong data-op-conditions>A → A · 소형 · 계단 없음</strong></div>
     <div class="op-row"><span>예상 범위</span><strong data-range>10,000원 ~ 15,000원</strong></div>
     <div class="op-row"><span>상태</span><strong data-status>예시 작성</strong></div>
-    <p class="op-note">이 패널은 접수 시연의 선택값을 읽기 전용으로 비추기만 합니다. 금액 확정, 파트너 배정·수락, 결제, 위치, 알림 기능은 포함하지 않습니다.</p>
+    <p class="op-note">접수 시연의 선택값을 읽기 전용으로 비춥니다.</p>
   </div>
 </section>
 </main>
@@ -266,7 +294,7 @@
 <footer class="site-footer">
   <p><strong>오늘의 도움</strong>은 제안을 위해 만든 가상 서비스명입니다. 이 페이지는 정적 제안 시안이며 실제 서비스가 아닙니다.</p>
   <p>표시된 금액은 시연용 고정 규칙이며 사업 요금이 아닙니다. 입력값은 브라우저 메모리에만 머물고 새로고침 시 초기화됩니다.</p>
-  <p>서체: Pretendard (SIL Open Font License) · 일러스트: 본 시안용 자체 제작</p>
+  <p>서체: Pretendard (SIL Open Font License) · 일러스트: 본 시안용 자체 제작 · 3D 렌더링: three.js (MIT, vendor/THREE_LICENSE.txt)</p>
 </footer>
 <script type="module" src="app.mjs"></script>
 </body>

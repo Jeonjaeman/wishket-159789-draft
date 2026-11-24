@@ -6,21 +6,29 @@
 ## 실행
 
 ```
-npm test          # node --test tests/*.test.mjs  (의존성 없음, Node 20+)
+npm test          # node --test tests/*.test.mjs  (테스트 자체는 의존성 없음, Node 20+)
 ```
 
-페이지는 `index.html`을 브라우저에서 바로 열거나 아무 정적 서버로 서빙하면 됩니다. 외부 폰트·이미지·CDN·네트워크 호출이 없습니다.
+페이지는 ES 모듈(`app.mjs`, `scene3d.mjs`, `vendor/three.module.js`)을 쓰므로 **HTTP 서버로 서빙해야** 합니다. `file://`로 직접 열면 모듈 로딩이 막혀 위자드·3D가 동작하지 않습니다.
+
+```
+npx serve .          # 또는 python -m http.server 8080 등 아무 정적 서버
+```
+
+외부 폰트·이미지·CDN·네트워크 호출은 없습니다. three.js도 `vendor/`의 로컬 사본만 읽습니다(`node_modules`는 페이지에서 참조하지 않음).
 
 ## 구성
 
 | 파일 | 역할 |
 | --- | --- |
-| `index.html` | 히어로(자체 제작 아이소메트릭 SVG), 서비스 안내, 진행 흐름, 접수 시연 위자드, 운영자 개념 패널, 푸터 |
-| `style.css` | Pretendard `@font-face`(로컬), 레이아웃, 모션(`prefers-reduced-motion`에서 전부 정지) |
+| `index.html` | 히어로(자체 제작 아이소메트릭 SVG + 선택적 3D 캔버스), 장면 전환 무대, 접수 시연 위자드, 서비스 안내, 진행 흐름, 운영자 개념 패널, 푸터 |
+| `style.css` | Pretendard `@font-face`(로컬), 레이아웃, 스크롤 연동 장면(`--p`)·히어로 시차(`--hp`), 모션(`prefers-reduced-motion`에서 전부 정지·장면은 완결 상태로 고정) |
 | `core.mjs` | 순수 산식 `estimate()`와 메모리 상태 함수. 저장소 사용 없음 |
-| `app.mjs` | 위자드 4단계, 요약·운영자 패널 동기화, 모바일 메뉴 접근성 |
+| `app.mjs` | 위자드 4단계, 요약·운영자 패널 동기화, 모바일 메뉴 접근성, 스크롤 연동(rAF 1회/프레임), 3D 모듈 조건부 로딩 |
+| `scene3d.mjs` | 점진적 향상: three.js 직교 카메라 아이소메트릭 마을(절차 생성, 베벨 건물·창·보도·나무·배달 경로·소포, PCF 소프트 그림자, 반구+키/필/림 조명). WebGL 없음·모션 축소면 불러오지 않고 SVG 유지. 캔버스는 `aria-hidden`, 픽셀비 ≤1.5, 화면 밖·숨김 탭에서 렌더 정지 |
+| `vendor/` | three.js 0.180.0 (`three.module.js`, `three.core.js`, MIT — `THREE_LICENSE.txt`) |
 | `tests/core.test.mjs` | 16가지 입력 조합, 예시 금액, 잘못된 입력, 상태 초기화 규칙 |
-| `tests/structure.test.mjs` | 앵커, 네트워크·저장소·개인정보 필드 부재, SVG 접근성, 필수 경계 문구 |
+| `tests/structure.test.mjs` | 앵커, 네트워크·저장소·개인정보 필드 부재, SVG 접근성, 필수 경계 문구, 장면·금액·제목 줄바꿈·3D 로딩 규칙 |
 | `assets/fonts/` | PretendardVariable.woff2 + OFL.txt |
 
 ## 가상 산식 (사업 요금 아님)
@@ -28,7 +36,7 @@ npm test          # node --test tests/*.test.mjs  (의존성 없음, Node 20+)
 - 기본 10,000원 · 구역 A↔B 가산 5,000원(같은 구역 0원) · 중형 짐 5,000원(소형 0원) · 계단 있음 3,000원(없음 0원)
 - 기준 금액 = 합계, 예상 범위 = 기준 금액 ~ 기준 금액 + 5,000원
 - 예: A→B / 중형 / 계단 있음 = 23,000~28,000원, A→A / 소형 / 계단 없음 = 10,000~15,000원
-- 결과 옆 고정 문구: `시연용 규칙 계산 · 실제 AI 아님 · 확정 견적 아님`
+- 결과(3단계 금액 아래) 고정 문구 1곳: `시연용 규칙 계산 · 실제 AI 아님 · 확정 견적 아님` — 그 밖의 안내는 상단 띠와 푸터에만 둔다
 
 ## 위자드 상태 규칙
 
@@ -46,10 +54,11 @@ npm test          # node --test tests/*.test.mjs  (의존성 없음, Node 20+)
 - Awwwards — saapro mobile waste management: https://www.awwwards.com/sites/saapro-mobile-waste-management (라이브 https://www.saapro.ae/)
 - Webjangi — SAFE U WORKS: https://www.webjangi.com/artwork/artworkView?artworkIndex=A0000000137763 (라이브 https://upleat-safeu.com/)
 
-둥근 풀블리드 무대, 큰 기하 타이포, 선명한 단색 배경 대비라는 방향만 참고했고 로고·이미지·문장은 가져오지 않았습니다. 일러스트는 본 시안을 위해 직접 그린 SVG입니다.
+둥근 풀블리드 무대, 큰 기하 타이포, 스크롤에 묶인 오브젝트 장면 전환, 선명한 단색 배경 대비라는 방향만 참고했고 로고·이미지·문장은 가져오지 않았습니다. 일러스트는 본 시안을 위해 직접 그린 SVG이고, 3D 마을은 three.js 기본 도형으로 절차 생성했습니다(외부 모델·텍스처 없음).
 
 ## 편집 위치
 
 - 금액 규칙: `core.mjs`의 `RULES`
 - 히어로 문구: `index.html`의 `.hero-copy`
-- 색: `style.css`의 `:root` 변수(버터 `#f3f1a6`, 근흑 `#1f2823`, 녹색 `#255c45`)
+- 색: `style.css`의 `:root` 변수(버터 `#f3f1a6`, 근흑 `#1f2823`, 녹색 `#255c45`) · 3D 색은 `scene3d.mjs`의 `C`
+- 장면 전환 문장·상태 표식: `index.html`의 `.scene-stage`, 진행 구간: `style.css`의 `animation-range`와 `app.mjs`의 같은 수식

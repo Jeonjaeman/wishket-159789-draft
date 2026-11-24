@@ -8,7 +8,9 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; font-family: 'Pretendard', system-ui, sans-serif; color: var(--ink); background: var(--paper); line-height: 1.55; font-size: 16px; -webkit-font-smoothing: antialiased; }
-h1, h2, h3 { margin: 0; letter-spacing: -.035em; line-height: 1.08; font-weight: 800; }
+/* 제목류: 어절 단위로만 줄바꿈(글자 중간 분리 금지). 의도한 줄바꿈은 <br> + .nw 로만 */
+h1, h2, h3 { margin: 0; letter-spacing: -.035em; line-height: 1.08; font-weight: 800; word-break: keep-all; overflow-wrap: normal; }
+.nw { white-space: nowrap; display: inline-block; }
 p { margin: 0; }
 a { color: inherit; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
@@ -24,7 +26,6 @@ button, select, input { font: inherit; color: inherit; }
 .site-header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 8px 20px; background: var(--paper); border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; min-height: 44px; font-weight: 800; }
 .brand-mark { width: 26px; height: 26px; border-radius: 9px 9px 9px 3px; background: linear-gradient(135deg, var(--butter), var(--green) 70%); box-shadow: inset 0 0 0 2px var(--ink); }
-.brand-tag { font-size: 12px; font-weight: 600; color: var(--muted); padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; }
 .menu-btn { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--white); font-weight: 700; font-size: 14px; cursor: pointer; }
 .menu-bars { width: 16px; height: 2px; background: currentColor; box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; }
 .site-nav ul { display: flex; gap: 4px; }
@@ -52,10 +53,16 @@ h1 .nw { white-space: nowrap; display: inline-block; }
 .btn:active { transform: translateY(0) scale(.98); }
 .btn-dark { background: var(--ink); color: var(--butter); box-shadow: 0 10px 24px -10px rgba(31, 40, 35, .6); }
 .btn-dark:hover { box-shadow: 0 16px 30px -12px rgba(31, 40, 35, .7); }
-.hero-art { position: relative; align-self: stretch; min-height: 420px; }
-.town { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-/* 데스크톱: 마을을 살짝 키우고 오른쪽·아래 가장자리로 밀어 빈 모서리를 줄인다 */
-@media (min-width: 900px) { .town { transform: scale(1.12) translate(2.5%, 3%); transform-origin: 60% 55%; } }
+/* 히어로 아트: 마을 전체(지면 그림자 포함)가 viewBox 안에 들어가고 meet 로 맞추므로 어느 폭에서도 건물·지면이 잘리지 않는다.
+   --hp(0→1, 히어로가 스크롤로 밀려나는 비율)로 시차: 마을은 천천히 떠오르며 살짝 커지고 카드는 더 빨리 떠오른다 */
+.hero { --hp: 0; }
+.hero-art { position: relative; align-self: stretch; min-height: 420px; padding: 24px 12px 24px 0; }
+.hero-art-stage { position: absolute; inset: 24px 12px 24px 0; transform: translate3d(0, calc(var(--hp) * -56px), 0) scale(calc(1 + var(--hp) * .06)); transform-origin: 55% 60%; will-change: transform; }
+.town { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.town-3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+/* 3D 캔버스가 올라오면 SVG는 보조 기술에만 남긴다(display:none 이면 접근 가능한 이름이 사라지므로 시각적으로만 숨김) */
+.hero-art.has-3d .town { width: 1px; height: 1px; inset: auto 0 0 auto; overflow: hidden; clip: rect(0 0 0 0); }
+.float-card { transform: translate3d(0, calc(var(--hp) * -110px), 0); }
 .float-card { position: absolute; right: clamp(16px, 4%, 48px); bottom: clamp(20px, 8%, 72px); display: grid; gap: 4px; padding: 14px 18px; background: var(--white); border-radius: 18px; box-shadow: 0 24px 50px -20px rgba(31, 40, 35, .45), 0 2px 0 rgba(31, 40, 35, .06); min-width: 196px; }
 .fc-label { font-size: 12px; font-weight: 600; color: var(--muted); }
 .fc-value { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
@@ -63,10 +70,11 @@ h1 .nw { white-space: nowrap; display: inline-block; }
 .fc-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
 
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes card-float { 0%, 100% { transform: translate3d(0, calc(var(--hp) * -110px), 0); } 50% { transform: translate3d(0, calc(var(--hp) * -110px - 10px), 0); } }
 @keyframes dash { to { stroke-dashoffset: -36; } }
 @keyframes ride { 0%, 100% { transform: translate(470px, 236px); } 50% { transform: translate(466px, 234px); } }
 .parcel { animation: float 5s var(--ease) infinite; transform-origin: 400px 240px; }
-.float-card { animation: float 6s var(--ease) infinite 1s; }
+.float-card { animation: card-float 6s var(--ease) infinite 1s; }
 .route-line { animation: dash 2.4s linear infinite; }
 .courier { animation: ride 3s ease-in-out infinite; }
 .clock { animation: float 7s ease-in-out infinite .5s; }
@@ -75,16 +83,17 @@ h1 .nw { white-space: nowrap; display: inline-block; }
   .hero { grid-template-columns: 1fr; min-height: 0; }
   h1 { font-size: clamp(40px, 10.5vw, 72px); } /* 768px → 72px, 390px → 41px */
   .hero-copy { padding-bottom: 8px; }
-  .hero-art { min-height: 0; aspect-ratio: 1 / .78; }
-  .town { object-fit: cover; }
+  /* 마을 viewBox 비율(690:420)에 여백을 더한 비율 → meet 로 맞춰도 위아래 빈 띠가 생기지 않는다 */
+  .hero-art { min-height: 0; aspect-ratio: 690 / 470; padding: 12px 12px 24px; }
+  .hero-art-stage { inset: 12px 12px 24px; }
   .float-card { right: 14px; bottom: 14px; min-width: 0; padding: 10px 14px; }
   .fc-value { font-size: 17px; }
 }
 @media (max-width: 420px) { .float-card { display: none; } }
 @media (max-width: 339px) { h1 { font-size: 36px; } }
 
-/* 공통 섹션 */
-.section { padding: clamp(56px, 9vw, 120px) clamp(20px, 5vw, 72px); max-width: 1320px; margin: 0 auto; }
+/* 공통 섹션 — 앵커 이동 시 고정 헤더(64px) 아래 24px 여유 */
+.section { padding: clamp(56px, 9vw, 120px) clamp(20px, 5vw, 72px); max-width: 1320px; margin: 0 auto; scroll-margin-top: 88px; }
 .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 18px; }
 .eyebrow.light { color: var(--butter); }
 h2 { font-size: clamp(32px, 4.6vw, 64px); max-width: 18ch; }
@@ -94,7 +103,7 @@ h2 { font-size: clamp(32px, 4.6vw, 64px); max-width: 18ch; }
 .facts { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
 .facts div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .facts dt { font-size: 13px; font-weight: 700; color: var(--muted); }
-.facts dd { margin: 0; font-weight: 600; }
+.facts dd { margin: 0; font-weight: 600; word-break: keep-all; }
 .steps-editorial { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 48px; }
 .steps-editorial li { border-top: 2px solid var(--ink); padding-top: 18px; }
 .num { display: block; font-size: clamp(72px, 9vw, 128px); font-weight: 850; letter-spacing: -.06em; line-height: .9; color: var(--green); margin-bottom: 18px; font-variant-numeric: tabular-nums; }
@@ -102,33 +111,67 @@ h2 { font-size: clamp(32px, 4.6vw, 64px); max-width: 18ch; }
 .steps-editorial p { color: var(--muted); max-width: 30ch; }
 @media (max-width: 760px) { .service-grid, .steps-editorial { grid-template-columns: 1fr; } }
 
-/* 접수 시연 — 어두운 앱 무대 */
-/* 장면 전환 — 히어로와 시연 사이, 스크롤 위치에 묶인 경로 표면. --p 0(작은 둥근 경로 조각) → 1(시연 무대 전체 폭)
-   CSS 스크롤 타임라인이 있으면 CSS가, 없으면 app.mjs가 rAF 한 번에 --p 하나만 갱신. 기본값 1 = 끝 상태(JS 없음·모션 축소) */
+/* 장면 전환 — 히어로와 시연 사이의 풀블리드 무대.
+   .scene = 스크롤 트랙(무대 75vh + 진행 구간 80vh). .scene-sticky = 헤더 아래 머무는 무대(75vh).
+   --p 0 → 1 : 지면이 둥근 카드(inset 10%/7%)에서 뷰포트 전체(100vw × 75vh)로 열리고, 경로가 그어지며 소포가 왼쪽 출발점에서 오른쪽 도착점까지 이동한다.
+   글(캡션·문장·상태 표식)은 .scene-stage 에 있어 clip-path 의 영향을 받지 않고, 처음부터 카드 안쪽에 배치되어 5프레임 모두 읽힌다.
+   CSS 스크롤 타임라인이 있으면 CSS가, 없으면 app.mjs가 rAF 한 번에 --p 하나만 갱신. 기본값 1 = 완결 상태(JS 없음·모션 축소) */
 @property --p { syntax: '<number>'; inherits: true; initial-value: 1; }
-/* 짧은 전환 띠: 독립 패널이 아니라 히어로→시연 사이의 경로 조각. 캡션은 위, 경로는 아래 절반 */
-.scene { --p: 1; position: relative; margin: 0 12px; height: clamp(180px, 28vh, 300px); }
+.scene { --p: 1; position: relative; margin: 0; height: 155vh; scroll-margin-top: 64px; }
+.scene-sticky { position: sticky; top: 64px; height: 75vh; min-height: 480px; overflow: hidden; }
 .scene-surface {
-  position: absolute; inset: 0; background: linear-gradient(180deg, #30604a 0%, #22332b 100%);
-  clip-path: inset(calc(30% * (1 - var(--p))) calc(34% * (1 - var(--p))) 0 calc(34% * (1 - var(--p))) round calc(28px + 120px * (1 - var(--p))) calc(28px + 120px * (1 - var(--p))) 0 0);
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(60% 50% at calc(50% + 30% * var(--p)) 20%, rgba(243, 241, 166, .18) 0%, rgba(243, 241, 166, 0) 70%),
+    linear-gradient(180deg, #30604a 0%, #26473a 55%, #22332b 100%);
+  clip-path: inset(calc(10% * (1 - var(--p))) calc(7% * (1 - var(--p))) round calc(40px * (1 - var(--p))));
 }
-.scene-caption { position: absolute; left: 0; right: 0; top: 16%; margin: 0; padding: 0 20px; text-align: center; color: #fff; font-size: clamp(15px, 1.5vw, 20px); font-weight: 700; letter-spacing: -.02em; line-height: 1.35; word-break: keep-all; }
-.scene-route { position: absolute; left: 0; right: 0; top: 46%; width: 100%; height: 50%; display: block; }
-.scene-path { fill: none; stroke: var(--orange); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - clamp(0, (var(--p) - .25) / .75, 1)); }
-.scene-node { fill: #fff; stroke: var(--orange); stroke-width: 6; }
-@media (max-width: 899px) { .scene { max-height: 220px; } }
-.scene-parcel rect { fill: var(--butter); }
-.scene-parcel path { fill: none; stroke: var(--green); stroke-width: 5; }
-.scene-parcel { transform-box: fill-box; transform-origin: center; transform: scale(calc(.5 + .5 * var(--p))); }
+/* 지면 질감: 아이소메트릭 격자. --p 가 커질수록 격자가 넓게 퍼진다(지면이 "열리는" 느낌) */
+.scene-surface::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(60deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px calc(48px + 32px * var(--p))), repeating-linear-gradient(-60deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px calc(48px + 32px * var(--p)));
+  mask-image: linear-gradient(180deg, transparent 0%, #000 40%, #000 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 40%, #000 80%, transparent 100%);
+}
+.scene-stage { position: absolute; inset: 14% 10%; display: grid; grid-template-rows: auto auto 1fr auto; align-content: center; gap: clamp(10px, 1.6vh, 18px); color: #f5f4e6; }
+.scene-caption { margin: 0; color: var(--butter); font-size: clamp(13px, 1.1vw, 16px); font-weight: 700; letter-spacing: .02em; word-break: keep-all; }
+/* 1440 → 88px, 390 → 32px, 320 → 30px. 두 구절은 .nw 로 한 덩어리 */
+.scene-title { margin: 0; font-size: clamp(30px, 8.2vw, 88px); line-height: .98; letter-spacing: -.045em; font-weight: 850; color: #fff; word-break: keep-all; }
+.scene-track { position: relative; min-height: clamp(96px, 16vh, 150px); margin: clamp(8px, 2vh, 20px) 0 0; }
+.scene-route { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.scene-path-base { fill: none; stroke: rgba(255, 255, 255, .22); stroke-width: 2; stroke-dasharray: .012 .012; vector-effect: non-scaling-stroke; }
+.scene-path { fill: none; stroke: var(--orange); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p)); vector-effect: non-scaling-stroke; }
+.scene-node { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px var(--orange); transform: translate(-50%, -50%); }
+.scene-node-start { left: 0; top: calc(100% / 1.2); }
+.scene-node-end { left: 100%; top: calc(100% / 1.2); background: var(--orange); box-shadow: 0 0 0 5px #fff; }
+/* 소포: 경로(2차 베지에 M0 100 Q600 -20 1200 100, viewBox 높이 120)의 같은 수식으로 x·y 계산 → 어떤 폭에서도 선 위를 지난다 */
+.scene-parcel {
+  position: absolute; width: clamp(64px, 9vw, 120px); aspect-ratio: 120 / 130;
+  left: calc(var(--p) * 100%); top: calc((100 - 240 * var(--p) * (1 - var(--p))) / 1.2 * 1%);
+  transform: translate(-50%, -88%) scale(calc(.82 + .18 * var(--p)));
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, .35));
+}
+.scene-parcel svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.sp-shadow { fill: rgba(0, 0, 0, .28); }
+.scene-status { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 12px; margin: 0; padding: 0; }
+.scene-mark { --on: 0; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px 0 10px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .28); color: #f5f4e6; font-size: 13px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; background: rgba(255, 255, 255, calc(.06 + .12 * var(--on))); }
+.scene-mark span { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 800; color: var(--ink); background: var(--butter); background: color-mix(in srgb, var(--orange) calc(var(--on) * 100%), var(--butter)); }
+/* 표식 점등 구간: 0~.33 / .33~.66 / .66~1 — 소포가 해당 구간을 지날 때 번호가 주황으로 */
+.scene-mark[data-mark="1"] { --on: clamp(0, var(--p) * 6, 1); }
+.scene-mark[data-mark="2"] { --on: clamp(0, (var(--p) - .33) * 6, 1); }
+.scene-mark[data-mark="3"] { --on: clamp(0, (var(--p) - .66) * 6, 1); }
 @supports (animation-timeline: view()) {
-  .scene { animation: scene-reveal linear both; animation-timeline: view(); animation-range: entry 10% cover 55%; }
+  /* 트랙이 뷰포트를 지나는 비율(cover) 중 무대가 고정되어 있는 구간만 사용 */
+  .scene { animation: scene-reveal linear both; animation-timeline: view(); animation-range: cover 30% cover 66%; }
 }
 @keyframes scene-reveal { from { --p: 0; } to { --p: 1; } }
+@media (max-width: 899px) { .scene-stage { inset: 12% 9%; } .scene-mark { min-height: 32px; font-size: 12px; padding: 0 10px 0 6px; gap: 6px; } .scene-mark span { width: 22px; height: 22px; } .scene-node { width: 14px; height: 14px; box-shadow: 0 0 0 4px var(--orange); } .scene-node-end { box-shadow: 0 0 0 4px #fff; } }
 /* 시연 무대 등장: 위치 이동만(불투명도 0 숨김 없음). 클래스가 없거나 모션 축소면 그대로 보인다 */
 @keyframes demo-rise { from { transform: translateY(40px); } to { transform: translateY(0); } }
 .demo.is-in { animation: demo-rise .85s cubic-bezier(.22,1,.36,1) both; }
 
-.demo { max-width: none; margin: 0 12px; padding-top: clamp(28px, 4vw, 56px); border-radius: 0 0 var(--radius) var(--radius); background: linear-gradient(180deg, #22332b 0%, var(--ink) 50%, #141b17 100%); color: #f5f4e6; }
+/* 접수 시연 — 어두운 앱 무대. 장면 지면이 풀블리드로 끝나므로 같은 폭으로 이어 받고 아래 모서리만 둥글린다 */
+.demo { max-width: none; margin: 0; padding-top: clamp(28px, 4vw, 56px); border-radius: 0 0 var(--radius) var(--radius); background: linear-gradient(180deg, #22332b 0%, var(--ink) 50%, #141b17 100%); color: #f5f4e6; scroll-margin-top: 88px; }
 .demo-head { max-width: 1176px; margin: 0 auto 36px; }
 .demo h2 { color: #fff; }
 .app-shell { max-width: 1176px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, .8fr); gap: 20px; align-items: start; }
@@ -154,7 +197,10 @@ h2 { font-size: clamp(32px, 4.6vw, 64px); max-width: 18ch; }
 .btn-light { background: var(--green); color: #fff; }
 .btn-light:hover { background: var(--green-deep); }
 .btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
-.range { font-size: clamp(32px, 4vw, 48px); font-weight: 850; letter-spacing: -.04em; line-height: 1.1; margin-top: 6px; }
+/* 금액 범위: 최소~최대를 한 덩어리로(줄바꿈 없음). 390px → 24.2px, 320px → 24px 에서 "23,000원 ~ 28,000원"이 한 줄에 들어온다 */
+.range { font-size: clamp(24px, 6.2vw, 48px); font-weight: 850; letter-spacing: -.04em; line-height: 1.1; margin-top: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* 요약·최종·운영자 패널의 범위는 금액(숫자+원) 단위로만 줄바꿈 */
+.amt { white-space: nowrap; }
 .caption { font-size: 12px; color: var(--muted); margin-top: 8px; }
 .breakdown { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
 .breakdown td { padding: 10px 0; border-bottom: 1px solid var(--line); }
@@ -185,4 +231,8 @@ h2 { font-size: clamp(32px, 4.6vw, 64px); max-width: 18ch; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* 장면은 완결 상태(--p 1)로 고정 — 트랙 없이 무대 높이만 */
+  .scene { height: auto; }
+  .scene-sticky { position: relative; top: 0; }
+  .hero { --hp: 0 !important; }
 }

@@ -17,6 +17,9 @@ const dl = (rows) => rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>
 function render({ focus = false, announce = '' } = {}) {
   const est = estimate(conditionsOf(state));
   const rangeText = `${formatWon(est.min)} ~ ${formatWon(est.max)}`;
+  // 금액은 숫자+원을 한 덩어리로 유지(좁은 폭에서 '원'만 다음 줄로 떨어지지 않도록). 줄바꿈은 '~' 앞뒤에서만
+  const rangeHTML = `<span class="amt">${formatWon(est.min)}</span> ~ <span class="amt">${formatWon(est.max)}</span>`;
+  const rangeCompact = `${est.min.toLocaleString('ko-KR')}~${formatWon(est.max)}`;
   const status = statusOf(state);
 
   $$('.stepper li').forEach((li) => {
@@ -26,13 +29,13 @@ function render({ focus = false, announce = '' } = {}) {
   });
   $$('.step-panel').forEach((p) => p.classList.toggle('is-active', Number(p.dataset.panel) === state.step));
 
-  $$('[data-range]').forEach((el) => { el.textContent = rangeText; });
+  $$('[data-range]').forEach((el) => { el.innerHTML = rangeHTML; });
   $$('[data-status]').forEach((el) => { el.textContent = status; });
   $('[data-breakdown]').innerHTML = est.breakdown.map((r) => `<tr><td>${r.label}</td><td>${r.amount ? `+${formatWon(r.amount)}` : '0원'}</td></tr>`).join('')
-    + `<tr class="total"><td>기준 금액 · 예상 범위</td><td>${formatWon(est.min)} · ${rangeText}</td></tr>`;
+    + `<tr class="total"><td>예상 범위</td><td class="amt">${rangeCompact}</td></tr>`;
   const rows = describe(state);
   $('[data-summary]').innerHTML = dl(rows);
-  $('[data-final]').innerHTML = dl([...rows, ['예상 범위', rangeText], ['상태', status]]);
+  $('[data-final]').innerHTML = dl([...rows, ['예상 범위', rangeHTML], ['상태', status]]);
   $('[data-op-conditions]').textContent = `${state.from} → ${state.to} · ${LABEL.size[state.size]} · ${LABEL.stairs[state.stairs]}`;
 
   $$('[data-cond]', form).forEach((el) => {
@@ -94,25 +97,41 @@ mq.addEventListener('change', () => { if (mq.matches && menuOpen()) setMenu(fals
 
 render();
 
-/* 장면 전환 — CSS 스크롤 타임라인이 없을 때만 rAF 한 번에 --p 하나를 갱신 (scroll 핸들러는 플래그만 세움, 레이아웃 읽기는 프레임당 1회) */
+/* 스크롤 연동 — rAF 한 번에 갱신. scroll 핸들러는 플래그만 세우고 레이아웃 읽기는 프레임당 1회(장면 rect)뿐이다.
+   · 히어로 시차 --hp : scrollY / 뷰포트 높이 (레이아웃 읽기 없음). 3D 장면이 켜져 있으면 같은 값으로 카메라 깊이도 움직인다
+   · 장면 --p : CSS 스크롤 타임라인(view())이 없을 때만 JS가 계산. CSS 의 animation-range: cover 30% → cover 66% 와 같은 구간 */
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const hero = $('.hero');
 const scene = $('.scene');
-if (scene && !reduceMotion.matches && !(window.CSS && CSS.supports('animation-timeline: view()'))) {
+const sceneByJs = !!scene && !(window.CSS && CSS.supports('animation-timeline: view()'));
+let hero3d = null;
+if (!reduceMotion.matches) {
   let queued = false;
   const update = () => {
     queued = false;
-    const r = scene.getBoundingClientRect();
     const vh = innerHeight;
-    // CSS의 animation-range: entry 10% → cover 55% 와 같은 구간
-    const start = vh - r.height * 0.10;
-    const span = 0.55 * (vh + r.height) - r.height * 0.10;
-    const p = Math.min(1, Math.max(0, (start - r.top) / span));
-    scene.style.setProperty('--p', p.toFixed(4));
+    const hp = Math.min(1, Math.max(0, scrollY / (vh * 0.9)));
+    hero.style.setProperty('--hp', hp.toFixed(4));
+    hero3d?.setDepth(hp);
+    if (sceneByJs) {
+      const r = scene.getBoundingClientRect();
+      const cover = (vh - r.top) / (vh + r.height);
+      const p = Math.min(1, Math.max(0, (cover - 0.30) / 0.36));
+      scene.style.setProperty('--p', p.toFixed(4));
+    }
   };
   const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule, { passive: true });
   schedule();
+}
+
+/* 히어로 3D(점진적 향상): WebGL 이 되고 모션 축소가 아닐 때만 모듈을 불러온다. 실패하면 SVG 그대로 */
+const heroArt = $('.hero-art');
+// mountTown owns the single WebGL context and preserves SVG on init failure.
+// A separate capability-probe context can itself be GC-lost and emit warnings.
+if (heroArt && !reduceMotion.matches) {
+  import('./scene3d.mjs').then(({ mountTown }) => { hero3d = mountTown(heroArt); }).catch(() => { /* SVG 폴백 유지 */ });
 }
 
 /* 시연 무대 등장(.85s, 이동만). 관찰은 한 번뿐이며 등장 전에도 내용은 보인다 */
